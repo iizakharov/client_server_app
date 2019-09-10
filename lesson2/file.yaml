@@ -1,0 +1,9 @@
+array:
+- msg_1
+- msg_2
+- msg_3
+dict:
+    first: 54€
+    second: 89☺
+    third: 556♫
+integer: 55
