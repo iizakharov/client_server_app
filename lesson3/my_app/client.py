@@ -2,12 +2,12 @@ import sys
 import json
 import socket
 import time
-from settings.utils import *
-from settings.dict import *
+from config.utils import *
+from config.dict import *
 
 
 # запрос о подключении клиента
-def create_presence(account_name='Guest'):
+def create_presence(account_name='User'):
     out = {
         ACTION: PRESENCE,
         TIME: time.time(),
@@ -19,10 +19,10 @@ def create_presence(account_name='Guest'):
 
 
 # Функция разбирает ответ сервера
-def process_ans(message):
+def process_answer(message):
     if RESPONSE in message:
         if message[RESPONSE] == 200:
-            return '200 : OK'
+            return '200 : OK | Соединение установлено!'
         elif message[RESPONSE] == 400:
             return f'400 : {message[ERROR]}'
     raise ValueError
@@ -49,7 +49,7 @@ def main():
     message_to_server = create_presence()
     send_message(transport, message_to_server)
     try:
-        answer = process_ans(get_message(transport))
+        answer = process_answer(get_message(transport))
         print(answer)
     except (ValueError, json.JSONDecodeError):
         print('Не удалось декодировать сообщение сервера.')

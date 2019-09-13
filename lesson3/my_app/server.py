@@ -1,16 +1,18 @@
 import socket
 import sys
 import json
-from settings.utils import *
-from settings.dict import *
+from config.utils import *
+from config.dict import *
 
 
 # Обработчик сообщений от клиентов, принимает словарь - сообщение от клинта, проверяет корректность,
 # возвращает словарь-ответ для клиента
 def process_client_message(message):
     if ACTION in message and message[ACTION] == PRESENCE and TIME in message and USER in message and \
-            message[USER][ACCOUNT_NAME] == 'Guest':
-        return {RESPONSE: 200}
+            message[USER][ACCOUNT_NAME] == 'User':
+        return {
+            RESPONSE: 200,
+        }
     else:
         return {
             RESPONSE: 400,
