@@ -10,34 +10,57 @@
 import json
 
 
-def write_order_to_json():
-    it = str(input('Введите название товара: '))
-    qua = input('Введите количество товара: ')
-    pr = input('Введите цену товара: ')
-    bu = input('Введите имя покупателя: ')
-    da = input('Введите дату покупки: ')
+# def write_order_to_json():
+#     it = str(input('Введите название товара: '))
+#     qua = input('Введите количество товара: ')
+#     pr = input('Введите цену товара: ')
+#     bu = input('Введите имя покупателя: ')
+#     da = input('Введите дату покупки: ')
+#
+#     dict_1 = {
+#         "item": it,
+#         "quantity": qua,
+#         "price": pr,
+#         "buyer": bu,
+#         "date": da,
+#     }
+#
+#     dict_new = {"orders": dict_1}
+#
+#     return dict_new
+#
+#
+# dict_to_json = write_order_to_json()
+#
+#
+# with open('orders.json', 'w', encoding='utf-8') as f_n:
+#     json.dump(dict_to_json, f_n, sort_keys=True, indent=4)
+#
+# with open('orders.json', encoding='utf-8') as f_n:
+#     print(f_n.read())
 
-    dict_1 = {
-        "item": it,
-        "quantity": qua,
-        "price": pr,
-        "buyer": bu,
-        "date": da,
-    }
 
-    dict_new = {"orders": dict_1}
-
-    return dict_new
+# Version 2
 
 
-dict_to_json = write_order_to_json()
+def write_order_to_json(item, quantity, price, buyer, date):
+    with open('orders.json', 'r') as f_out:
+        data = json.load(f_out)
+    with open('orders.json', 'w') as f_in:
+        orders_list = data['orders']
+        order_info = {
+            "item": item,
+            "quantity": quantity,
+            "price": price,
+            "buyer": buyer,
+            "date": date
+            }
+        orders_list.append(order_info)
+        json.dump(data, f_in, indent=4)
+        print(data)
 
 
-with open('orders.json', 'w', encoding='utf-8') as f_n:
-    json.dump(dict_to_json, f_n, sort_keys=True, indent=4)
-
-with open('orders.json', encoding='utf-8') as f_n:
-    print(f_n.read())
-
+write_order_to_json('printer', '1', '6700', 'Ivan', '24.09.2019')
+write_order_to_json('printer', '1', '6700', 'Ivanov I.I.', '24.09.2019')
 
 

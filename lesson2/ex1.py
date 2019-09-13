@@ -19,49 +19,57 @@ import csv
 import re
 
 
-os_prod_list = []
-os_name_list = []
-os_code_list = []
-os_type_list = []
-main_data = [{
-    'Изготовитель системы': os_prod_list,
-    'Название ОС': os_name_list,
-    'Код продукта': os_code_list,
-    'Тип системы': os_type_list,
-}]
+def get_data():
+    global main_data
+    os_prod_list = []
+    os_name_list = []
+    os_code_list = []
+    os_type_list = []
+    main_data = []
+
+    for i in range(1, 4):
+        file_name = 'info_%s.txt' % i
+        file_obj = open(file_name)
+        data = file_obj.read()
+
+        os_prod_reg = re.compile(r'Изготовитель системы:\s*\S*')
+        os_prod_mas = os_prod_reg.findall(data)
+        os_prod_list.append(os_prod_mas[0].split()[2])
+
+        os_name_reg = re.compile(r'Windows\s*\S*')
+        os_name_mas = os_name_reg.findall(data)
+        os_name_list.append(os_name_mas[0])
+
+        os_code_reg = re.compile(r'Код продукта:\s*\S*')
+        os_code_mas = os_code_reg.findall(data)
+        os_code_list.append(os_code_mas[0].split()[2])
+
+        os_type_reg = re.compile(r'Тип системы:\s*\S*')
+        os_type_mas = os_type_reg.findall(data)
+        os_type_list.append(os_type_mas[0].split()[2])
+
+    headers = ['Изготовитель системы', 'Название ОС', 'Код продукта', 'Тип системы']
+    main_data.append(headers)
+
+    j = 1
+    for i in range(0, 3):
+        row_data = []
+        row_data.append(j)
+        row_data.append(os_prod_list[i])
+        row_data.append(os_name_list[i])
+        row_data.append(os_code_list[i])
+        row_data.append(os_type_list[i])
+        main_data.append(row_data)
+        j += 1
 
 
-def get_data(file):
-    with open(file) as f_n:
-        f_n_reader = csv.reader(f_n)
-        for row in f_n_reader:
-            myString = ''.join(row)
-            new_row = re.sub(r'\s{2,}', ' ', myString)
-            if 'Изготовитель системы' in new_row:
-                list_row = new_row.split(':')
-                os_prod_list.append(list_row[1])
-            elif 'Название ОС' in new_row:
-                list_row = new_row.split(':')
-                os_name_list.append(list_row[1])
-            elif 'Код продукта' in new_row:
-                list_row = new_row.split(':')
-                os_code_list.append(list_row[1])
-            elif 'Тип системы' in new_row:
-                list_row = new_row.split(':')
-                os_type_list.append(list_row[1])
-
-get_data('info_1.txt')
-get_data('info_2.txt')
-get_data('info_3.txt')
-
-# print(list(main_data.keys()))
+def write_to_csv(out_file):
+    get_data()
+    with open(out_file, 'w') as f:
+        writer = csv.writer(f)
+        for row in main_data:
+            writer.writerow(row)
 
 
-def write_to_csv(file_csv, data):
-    with open(file_csv, 'w', encoding='utf-8') as f_n:
-        f_n_writer = csv.DictWriter(f_n, fieldnames=list(data[0].keys()))
-        f_n_writer.writeheader()
-        for d in data:
-            f_n_writer.writerow(d)
-
-write_to_csv('file_1.csv', main_data)
+out_file = 'data_report.csv'
+write_to_csv(out_file)
